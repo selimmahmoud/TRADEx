@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoPhone Galaxy - Future of Mobile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <canvas class="matrix-bg" id="matrix"></canvas>
+    <div class="role-indicator" id="roleIndicator"></div>
+    <button class="cart-toggle" id="cartToggle" onclick="toggleCart()" title="Cart">🛒</button>
+    <div class="container">
+        <header class="header">
+            <div class="logo glow-text">NeoPhone Galaxy</div>
+            <div class="auth-buttons">
+                <div class="role-switcher" id="roleSwitcher" style="display: none;">
+                    <button class="role-btn" onclick="toggleRoleDropdown()">⚙️ ROLE</button>
+                    <div class="role-dropdown" id="roleDropdown">
+                        <div class="role-option" onclick="switchRole('customer')">👤 Customer</div>
+                        <div class="role-option" onclick="switchRole('sales')">💼 Sales</div>
+                        <div class="role-option" onclick="switchRole('admin')">🔧 Admin</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="showLogin()">Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()">Sign Up</button>
+                <button class="btn btn-secondary hidden" id="logoutBtn" onclick="logout()">Logout</button>
+            </div>
+        </header>
+        <div id="welcomeScreen" class="welcome-screen">
+            <h1 class="welcome-title glow-text">Welcome to the Future</h1>
+            <p style="font-size: 1.5rem; color: rgba(255,255,255,0.8); margin-bottom: 40px;">
+                Access the next generation of mobile innovation
+            </p>
+            <div style="font-size: 1.2rem; color: rgba(0,255,255,0.8);">
+                Please login or create an account to continue
+            </div>
+        </div>
+        <div id="mainContent" class="main-content container">
+            <div id="customerView">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                    <h2 class="glow-text" style="font-family: 'Orbitron', monospace; font-size: 2.5rem;">Latest Devices</h2>
+                    <div>
+                        <span id="cartCount" style="margin-right: 15px; font-weight: 600;">Cart: 0</span>
+                    </div>
+                </div>
+                <div id="productsGrid" class="products-grid"></div>
+            </div>
+            <div id="salesDashboard" class="dashboard">
+                <h2 class="glow-text" style="font-family: 'Orbitron', monospace; font-size: 2.5rem; margin-bottom: 30px;">Sales Control Center</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalSales">0</div>
+                        <div>Total Sales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalItems">0</div>
+                        <div>Total Items</div>
+                    </div>
+                </div>
+                <div class="sales-list">
+                    <h3 style="margin-bottom: 20px; color: #00ffff;">Recent Transactions</h3>
+                    <div id="salesList"></div>
+                </div>
+            </div>
+            <div id="adminPanel" class="dashboard admin-panel">
+                <h2 class="glow-text" style="font-family: 'Orbitron', monospace; font-size: 2.5rem; margin-bottom: 30px;">Admin Control Matrix</h2>
+                <div style="background: rgba(20,20,40,0.8); padding: 30px; border-radius: 20px; border: 1px solid rgba(0,255,255,0.2); margin-bottom: 40px;">
+                    <h3 style="color: #00ffff; margin-bottom: 25px;">Add New Device</h3>
+                    <div class="form-grid">
+                        <div>
+                            <div class="form-group">
+                                <label>Brand</label>
+                                <select id="brandSelect">
+                                    <option value="Apple">Apple</option>
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="Oppo">Oppo</option>
+                                    <option value="Vivo">Vivo</option>
+                                    <option value="Redmi">Redmi</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Name</label>
+                                <input type="text" id="phoneName" placeholder="e.g., iPhone 16 Pro Max">
+                            </div>
+                            <div class="form-group">
+                                <label>Specifications</label>
+                                <textarea id="specifications" rows="4" placeholder="Display: 6.8in OLED, Processor: A18 Pro..."></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>Colors</label>
+                                <input type="text" id="colors" placeholder="Space Black, Silver, Gold">
+                            </div>
+                            <div class="form-group">
+                                <label>Storage Options</label>
+                                <input type="text" id="storage" placeholder="128GB, 256GB, 512GB, 1TB">
+                            </div>
+                            <div class="form-group">
+                                <label>Price ($)</label>
+                                <input type="number" id="price" placeholder="999">
+                            </div>
+                            <div class="form-group">
+                                <label>Country of Manufacture</label>
+                                <input type="text" id="country" placeholder="China">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 200px; font-size: 1.1rem;" onclick="addProduct()">Deploy New Device</button>
+                </div>
+                <div class="products-list">
+                    <h3 style="color: #00ffff; margin-bottom: 25px;">Deployed Devices</h3>
+                    <div id="adminProductsList"></div>
+                </div>
+            </div>
+        </div>
+        <div id="successScreen" class="success-screen">
+            <div class="success-glow">YOU MADE IT!</div>
+            <p style="font-size: 1.5rem; color: rgba(255,255,255,0.8); margin-bottom: 40px;">
+                Your selection has been processed successfully
+            </p>
+            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 20px 40px;" onclick="resetApp()">New Mission</button>
+        </div>
+        <div class="cart" id="cart">
+            <h3 style="margin-bottom: 20px; color: #00ffff;">Quantum Cart</h3>
+            <div class="cart-items" id="cartItems"></div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="completeOrder()">Complete Order</button>
+        </div>
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+                <h2 style="color: #00ffff; margin-bottom: 30px; text-align: center;">Neural Login</h2>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="loginPhone" placeholder="+20 123 456 7890">
+                </div>
+                <div class="input-group">
+                    <label>Access Code</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="login()">Access Granted</button>
+            </div>
+        </div>
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('registerModal')">&times;</span>
+                <h2 style="color: #00ffff; margin-bottom: 30px; text-align: center;">Neural Registration</h2>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="registerPhone" placeholder="+20 123 456 7890">
+                </div>
+                <div class="input-group">
+                    <label>Access Code</label>
+                    <input type="password" id="registerPassword" placeholder="Create password">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="register()">Initialize Account</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
